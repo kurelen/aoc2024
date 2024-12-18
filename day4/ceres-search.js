@@ -32,9 +32,10 @@ const directions = [
 	[-1, -1],
 ];
 
-function to_string(row, column, length, lines, direction) {
+function to_string(row, column, lines, direction) {
 	const [drow, dcolumn] = direction;
 	let result = "";
+	let length = 4;
 	while (length > 0) { 
     result += lines?.[row]?.[column] ?? "";
 		row += drow;
@@ -50,7 +51,7 @@ function process_part_one(lines) {
 	for (let i = 0; i < lines.length; i++) {
     for (let j = 0; j < lines[i].length; j++) {
 			result += directions.map(
-				direction => to_string(i, j, 4, lines, direction)
+				direction => to_string(i, j, lines, direction)
 			  ).filter(word => word === "XMAS")
 			.length;
 		}
