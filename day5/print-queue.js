@@ -48,6 +48,26 @@ function update_is_valid(rules) {
 	};
 }
 
+function fix_update(rules) {
+	return function fix(update) {
+  	const copy = [...update]
+  	for (let i = 0; i < copy.length; i++) {
+  		for (let j = 0; j < copy.length; j++) {
+  		  if ( (i < j && rules[copy[j]]?.has(copy[i]))
+  		    || (i > j && rules[copy[i]]?.has(copy[j]))) {
+  				const a = copy[i];
+  				const b = copy[j];
+  				copy[i] = b;
+  				copy[j] = a;
+  				i = 0;
+  				j = 0;
+  		 	}
+  		}
+  	}
+  	return copy
+	}
+}
+
 function add_middle(result, update) {
 	const mid = (update.length - 1) / 2;
   return result + update[mid];
@@ -61,7 +81,12 @@ function process_part_one(queue) {
 }
 
 function process_part_two(queue) {
-	return false;
+	const { updates, rules } = queue;
+	const validate = update_is_valid(rules);
+	return updates
+		.filter(update => !validate(update))
+	  .map(fix_update(rules))
+	  .reduce(add_middle, 0);
 }
 
 process_input("input", into_queue, { rules: {}, updates: []})
