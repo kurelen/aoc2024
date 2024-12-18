@@ -50,10 +50,6 @@ function update_is_valid(rules) {
 
 function add_middle(result, update) {
 	const mid = (update.length - 1) / 2;
-	if (update.length % 2 === 0) {
-    console.warn("Even length: ", update);
-		return result;
-	}
   return result + update[mid];
 }
 
