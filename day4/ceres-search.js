@@ -32,10 +32,9 @@ const directions = [
 	[-1, -1],
 ];
 
-function to_string(row, column, lines, direction) {
+function to_string(row, column, length, lines, direction) {
 	const [drow, dcolumn] = direction;
 	let result = "";
-	let length = 4;
 	while (length > 0) { 
     result += lines?.[row]?.[column] ?? "";
 		row += drow;
@@ -45,13 +44,12 @@ function to_string(row, column, lines, direction) {
 	return result;
 }
 
-
 function process_part_one(lines) {
 	let result = 0;
 	for (let i = 0; i < lines.length; i++) {
     for (let j = 0; j < lines[i].length; j++) {
 			result += directions.map(
-				direction => to_string(i, j, lines, direction)
+				direction => to_string(i, j, 4, lines, direction)
 			  ).filter(word => word === "XMAS")
 			.length;
 		}
@@ -59,8 +57,28 @@ function process_part_one(lines) {
 	return result;
 }
 
-function process_part_two(ops) {
-	return false;
+function to_cross(row, column, lines) {
+  return [
+    to_string(row-1, column-1, 3, lines, [1, 1]),
+    to_string(row-1, column+1, 3, lines, [1, -1]),
+	];
+}
+
+function is_x_mas(xs) {
+  return xs.every(s => s === "MAS" || s === "SAM");
+}
+
+function process_part_two(lines) {
+	let result = 0;
+	for (let i = 0; i < lines.length; i++) {
+    for (let j = 0; j < lines[i].length; j++) {
+			const cross = to_cross(i, j, lines);
+			if (is_x_mas(cross)) {
+				result++;
+			}
+		}
+	}
+	return result;
 }
 
 process_input("input", into_lines, [])
