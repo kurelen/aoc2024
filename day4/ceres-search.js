@@ -21,9 +21,41 @@ function into_lines(value, line) {
 	return value;	
 }
 
+const directions = [
+  [1, 0],
+  [-1, 0],
+  [0, 1],
+  [0, -1],
+	[1, 1],
+	[1, -1],
+	[-1, 1],
+	[-1, -1],
+];
 
-function process_part_one(ops) {
-	return false;
+function to_string(row, column, length, lines, direction) {
+	const [drow, dcolumn] = direction;
+	let result = "";
+	while (length > 0) { 
+    result += lines?.[row]?.[column] ?? "";
+		row += drow;
+		column += dcolumn;
+		length--;
+	}
+	return result;
+}
+
+
+function process_part_one(lines) {
+	let result = 0;
+	for (let i = 0; i < lines.length; i++) {
+    for (let j = 0; j < lines[i].length; j++) {
+			result += directions.map(
+				direction => to_string(i, j, 4, lines, direction)
+			  ).filter(word => word === "XMAS")
+			.length;
+		}
+	}
+	return result;
 }
 
 function process_part_two(ops) {
@@ -32,7 +64,6 @@ function process_part_two(ops) {
 
 process_input("input", into_lines, [])
   .then((lines) => {
-		console.log(lines);
     console.log("Solution part one: ", process_part_one(lines));
     console.log("Solution part two: ", process_part_two(lines));
   })
