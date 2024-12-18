@@ -20,7 +20,7 @@ const DONT_OP = 0
 const DO_OP = 1
 const MUL_OP = 2
 
-const parser_regex = /(?<do_op>do\(\))|(?<dont_op>dont\(\))|(?<mul_op>mul)\((?<a>\d+),(?<b>\d+)\)/g
+const parser_regex = /(?<do_op>do\(\))|(?<dont_op>don't\(\))|(?<mul_op>mul)\((?<a>\d+),(?<b>\d+)\)/g
 function into_operations(result, line) {
 	const matches = line.matchAll(parser_regex);
 	for (const match of matches) {
@@ -46,11 +46,20 @@ function process_part_one(ops) {
 }
 
 function process_part_two(ops) {
-	return false
+	let do_flag = DO_OP
+	let result = 0;
+	ops.forEach(([op, a, b]) => {
+    if (op === MUL_OP) {
+      result += do_flag * a * b;
+		} else {
+      do_flag = op;
+		}
+	});
+	return result;
 }
 
 process_input("input", into_operations, [])
   .then((ops) => {
     console.log("Solution part one: ", process_part_one(ops));
-    //console.log("Solution part two: ", process_part_two(lists));
+    console.log("Solution part two: ", process_part_two(ops));
   })
