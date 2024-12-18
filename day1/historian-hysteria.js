@@ -26,14 +26,32 @@ function into_lists(lists, line) {
   return lists;
 }
 
-function process_lists(lists) {
+function process_lists_part_one(lists) {
   const [left, right] = lists;
   left.sort();
-  right.sort();.
+  right.sort();
   return left.reduce((sum, value, idx) => 
     sum + Math.abs(value - right[idx])  
-  );
+  , 0);
+}
+
+function reduction(list) {
+  return list.reduce((xs, x) => {
+		xs[x] = x in xs ? xs[x] + 1 : 1;
+		return xs;
+	}, {});
+}
+
+function process_lists_part_two(lists) {
+	const [left, right] = lists;
+	const weights = reduction(right);
+  return left.reduce((sum, value, idx) => 
+    sum + value * (weights[value] ?? 0), 0);
+  
 }
 
 process_input("input", into_lists, [[],[]])
-  .then(process_lists);
+  .then((lists) => {
+    console.log("Solution part one: ", process_lists_part_one(lists));
+    console.log("Solution part two: ", process_lists_part_two(lists));
+  })
