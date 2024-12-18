@@ -16,27 +16,41 @@ async function process_input(
   return initialValue;
 }
 
-const mul_regex = /mul\((\d+),(\d+)\)/g
-function into_number(result, line) {
-	const matches = line.matchAll(mul_regex);
+const DONT_OP = 0
+const DO_OP = 1
+const MUL_OP = 2
+
+const parser_regex = /(?<do_op>do\(\))|(?<dont_op>dont\(\))|(?<mul_op>mul)\((?<a>\d+),(?<b>\d+)\)/g
+function into_operations(result, line) {
+	const matches = line.matchAll(parser_regex);
 	for (const match of matches) {
-		const a = parseInt(match[1], 10);
-		const b = parseInt(match[2], 10);
-		result += a * b;
+		const groups = match.groups;
+		if (groups.do_op) {
+      result.push([DO_OP]);
+		} else if (groups.dont_op) {
+      result.push([DONT_OP]);
+		} else if (groups.mul_op) {
+			const a = parseInt(groups.a, 10);
+			const b = parseInt(groups.b, 10);
+			result.push([MUL_OP, a, b]);
+		}
 	}
 	return result;
 }
 
-function process_part_one(terms) {
-	return terms
+function process_part_one(ops) {
+	return ops.reduce(
+		(acc, [op, a, b]) => op === MUL_OP ? acc + a * b : acc
+		, 0
+	);
 }
 
-function process_part_two(reports) {
+function process_part_two(ops) {
 	return false
 }
 
-process_input("input", into_number, 0)
-  .then((lists) => {
-    console.log("Solution part one: ", process_part_one(lists));
-    console.log("Solution part two: ", process_part_two(lists));
+process_input("input", into_operations, [])
+  .then((ops) => {
+    console.log("Solution part one: ", process_part_one(ops));
+    //console.log("Solution part two: ", process_part_two(lists));
   })
