@@ -119,7 +119,13 @@ function process_part_two(state) {
 
 process_input("input",
 	into_state,
-	{ rows: 0, columns: 0, obstacles: {}, guard: undefined, direction: [-1, 0]})
+	{
+		rows: 0,
+		columns: 0,
+		obstacles: {},
+		guard: undefined,
+		direction: [-1, 0]
+	})
   .then((state) => {
     console.log("Solution part one: ", process_part_one(state));
     console.log("Solution part two: ", process_part_two(state));
