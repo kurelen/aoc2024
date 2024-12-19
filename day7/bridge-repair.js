@@ -17,7 +17,13 @@ async function process_input(
 }
 
 function into_lines(value, line) {
-	value.push(line);
+  const [aim, ...values] = line
+		.split(/:? /)
+		.map(s => parseInt(s,10));
+	value.push({
+    aim,
+		values
+	});
 	return value;	
 }
 
@@ -31,6 +37,8 @@ function process_part_two(lines) {
 
 process_input("input", into_lines, [])
   .then((lines) => {
+		console.log(lines);
     console.log("Solution part one: ", process_part_one(lines));
     console.log("Solution part two: ", process_part_two(lines));
   })
+
