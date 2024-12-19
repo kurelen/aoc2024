@@ -51,14 +51,18 @@ function to_coordinate(xs) {
 	return xs.join("-");
 }
 
+function contains_obstacle(coordinates, obstacles) {
+	const [row, column] = coordinates;
+  return obstacles?.[row]?.[column] ?? false;
+}
+
 function process_part_one(state) {
 	const path = new Set();
 	while (guard_in_map(state)) {
 		const [guard_r, guard_c] = state.guard;
 		const [d_r, d_c] = state.direction;
 		const next = [guard_r + d_r, guard_c + d_c];
-		const [n_r, n_c] = next;
-		if (state.obstacles?.[n_r]?.[n_c]) {
+		if (contains_obstacle(next, state.obstacles)) {
       state.direction = turn(state.direction);
 		} else {
 			path.add(to_coordinate(next));
