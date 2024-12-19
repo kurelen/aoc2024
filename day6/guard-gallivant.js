@@ -16,6 +16,14 @@ async function process_input(
   return initialValue;
 }
 
+function add_obstacle(coordinate, obstacles) {
+	const [row, column] = coordinate;
+	if (!(row in obstacles)) {
+    obstacles[row] = {};
+	}
+	obstacles[row][column] = true; 
+}
+
 function into_state(state, line) {
 	if (state.rows === 0) {
     state.columns = line.length;
@@ -23,10 +31,7 @@ function into_state(state, line) {
 	for (let i = 0; i < line.length; i++) {
 		const c = line[i];
 		if (c === "#") {
-			if (!(state.rows in state.obstacles)) {
-        state.obstacles[state.rows] = {};
-			}
-			state.obstacles[state.rows][i] = true; 
+			add_obstacle([state.rows, i], state.obstacles);
 		} else if (c === "^") {
       state.guard = [state.rows, i];
 		}
@@ -56,7 +61,30 @@ function contains_obstacle(coordinates, obstacles) {
   return obstacles?.[row]?.[column] ?? false;
 }
 
+function guard_cycles(state) {
+  const path = new Set();
+	let guard_posution;
+	while (guard_in_map(state)) {
+		const [guard_r, guard_c] = state.guard;
+		const [d_r, d_c] = state.direction;
+		const next = [guard_r + d_r, guard_c + d_c];
+		if (contains_obstacle(next, state.obstacles)) {
+      state.direction = turn(state.direction);
+		} else {
+			const directed_coordinate =
+				to_coordinate([...next, ...state.direction])
+			if (path.has(directed_coordinate)) {
+        return true;
+			}
+			path.add(directed_coordinate);
+			state.guard = next;
+		}
+	}
+	return false;
+}
+
 function process_part_one(state) {
+	state = structuredClone(state);
 	const path = new Set();
 	while (guard_in_map(state)) {
 		const [guard_r, guard_c] = state.guard;
@@ -72,8 +100,21 @@ function process_part_one(state) {
 	return path.size;
 }
 
-function process_part_two(lines) {
-	return false;
+function process_part_two(state) {
+	let cycles = 0;
+	for (let row = 0; row < state.rows; row++) {
+	  for (let column = 0; column < state.columns; column++) {
+			if (contains_obstacle([row, column], state.obstacles)) {
+        continue;
+			}
+			const copied_state = structuredClone(state);
+			add_obstacle([row, column], copied_state.obstacles);
+			if (guard_cycles(copied_state)) {
+			  cycles++;
+			}
+	  }
+	}
+	return cycles;
 }
 
 process_input("input",
