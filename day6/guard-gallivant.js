@@ -60,10 +60,7 @@ function process_part_one(state) {
 		const [n_r, n_c] = next;
 		if (state.obstacles?.[n_r]?.[n_c]) {
       state.direction = turn(state.direction);
-			console.log(`# Guard hits obstacle at ${next}`);
-			console.log(`> Guard turns ${state.direction}`);
 		} else {
-			console.log(`Guard moves to ${next}`);
 			path.add(to_coordinate(next));
 			state.guard = next;
 		}
